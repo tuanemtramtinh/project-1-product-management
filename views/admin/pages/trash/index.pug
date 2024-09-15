@@ -1,0 +1,60 @@
+extends ../../layouts/default.pug
+
+block main
+  h1 Thùng rác
+
+  .card.mb-3
+    .card-header Khôi phục và xoá vĩnh viễn sản phẩm 
+    .card-body
+      .col-6
+        form(
+          form-restore-destroy
+          data-path=`/${prefixAdmin}/trash/restore-multi||/${prefixAdmin}/trash/destroy`
+        )
+          .input-group
+            select(name="status" class="form-control")
+              option(value="restore") Khôi phục 
+              option(value="destroy") Xoá vĩnh viễn
+            .input-group-append
+              button(
+                class="btn btn-success"
+                type="submit"
+              ) Áp dụng
+
+  .card
+    .card-header Danh sách
+    .card-body
+      table.table.table-hover.table-sm
+        thead
+          tr
+            th 
+            th STT
+            th Hình ảnh
+            th Tiêu đề
+            th Giá
+            th Trạng thái
+            th Hành động
+
+        tbody
+          each item, index in products
+            tr 
+              td 
+                input(type="checkbox" input-change item-id=item.id)
+              td #{index + 1}
+              td
+                img(
+                  src=item.thumbnail
+                  alt=item.title
+                  width="100px"
+                  height="auto"
+                )
+              td #{item.title}
+              td #{item.price}$
+              td
+                if(item.status == "active")
+                  a(href="#" class="badge badge-success") Hoạt động
+                else if (item.status == "inactive")
+                  a(href="#" class="badge badge-danger") Dừng hoạt động
+              td
+                button(class="btn btn-warning btn-sm" button-restore item-id=item.id data-path=`/${prefixAdmin}/trash/restore`) Khôi phục
+                button(class="btn btn-danger btn-sm ml-1") Xóa vĩnh viễn

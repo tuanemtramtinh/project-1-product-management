@@ -1,3 +1,5 @@
+//--- Tính năng của trang Quản lí sản phẩm ----
+
 //Tính năng lọc trạng thái sản phẩm
 const boxFilter = document.querySelector("[box-filter]");
 
@@ -135,6 +137,30 @@ if (buttonDelete.length > 0) {
       const itemId = button.getAttribute("item-id");
 
       axios.patch(dataPath, { id: itemId }).then((res) => {
+        if (res.status === 200) {
+          location.reload();
+        }
+      });
+    });
+  });
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+
+//--- Tính năng của trang thùng rác---
+
+//Tính năng khôi phục sản phẩm
+const buttonRestore = document.querySelectorAll("[button-restore]");
+
+if (buttonRestore.length > 0) {
+  buttonRestore.forEach((button) => {
+    button.addEventListener("click", () => {
+      const dataPath = button.getAttribute("data-path");
+      const itemId = button.getAttribute("item-id");
+
+      axios.patch(dataPath, { id: itemId }).then((res) => {
+        console.log({res});
         if (res.status === 200){
           location.reload();
         }
@@ -142,3 +168,37 @@ if (buttonDelete.length > 0) {
     });
   });
 }
+
+//Tính năng khôi phục nhiều sản phẩm
+const formRestoreDestroy = document.querySelector("[form-restore-destroy]");
+
+if (formRestoreDestroy) {
+  const dataPaths = formRestoreDestroy.getAttribute('data-path').split('||');
+  let url;
+
+  formRestoreDestroy.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const status = e.target.status.value;
+    url = status === 'restore' ? dataPaths[0] : dataPaths[1];
+    const inputChange = document.querySelectorAll('[input-change]');
+
+    const checkedInputChange = Array.from(inputChange).reduce((acc, curr) => {
+      if (curr.checked) {
+        return [...acc, curr.getAttribute("item-id")];
+      }
+      return acc;
+    }, []);
+
+    const data = {
+      ids: checkedInputChange,
+      status: status,
+    };
+    axios.patch(url, data).then((res) => {
+      if(res.status === 200){
+        location.reload();
+      }
+    })
+  })
+}
+
+//Tính năng xoá vĩnh viễn sản phẩm 
