@@ -40,26 +40,33 @@ block main
           ])
         .col-4
           include ../../partials/form-search.pug
-        
+
 
   .card.mb-3
     .card-header Thay đổi trạng thái và xoá sản phẩm
     .card-body
-      .col-6
-        form(
-          form-change-multi 
-          data-path=`/${prefixAdmin}/product/change-multi`
-        )
-          .input-group
-            select(name="status" class="form-control")
-              option(value="active") Hoạt động
-              option(value="inactive") Dừng hoạt động 
-            .input-group-append
-              button(
-                class="btn btn-success"
-                type="submit"
-              ) Áp dụng
-        
+      .row
+        .col-6
+          form(
+            form-change-multi 
+            data-path=`/${prefixAdmin}/product/change-multi`
+          )
+            .input-group
+              select(name="status" class="form-control")
+                option(value="active") Hoạt động
+                option(value="inactive") Dừng hoạt động 
+              .input-group-append
+                button(
+                  class="btn btn-success"
+                  type="submit"
+                ) Áp dụng
+
+        .col-6.text-right
+          a(
+            href=`/${prefixAdmin}/product/create`
+            class="btn btn-outline-success"
+          ) + Thêm mới
+
 
   .card
     .card-header Danh sách
@@ -113,4 +120,3 @@ block main
         li(class="page-item")
           button(class="page-link" button-pagination=currentPage+1) Kế tiếp
 
-  

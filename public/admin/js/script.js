@@ -145,6 +145,22 @@ if (buttonDelete.length > 0) {
   });
 }
 
+//Tính năng Preview ảnh
+const uploadImage = document.querySelector("[upload-image]");
+if (uploadImage) {
+  const uploadImageInput = uploadImage.querySelector("[upload-image-input]");
+  const uploadImagePreview = uploadImage.querySelector(
+    "[upload-image-preview]"
+  );
+
+  uploadImageInput.addEventListener("change", () => {
+    const file = uploadImageInput.files[0];
+    if (file) {
+      uploadImagePreview.src = URL.createObjectURL(file);
+    }
+  });
+}
+
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 
@@ -160,8 +176,8 @@ if (buttonRestore.length > 0) {
       const itemId = button.getAttribute("item-id");
 
       axios.patch(dataPath, { id: itemId }).then((res) => {
-        console.log({res});
-        if (res.status === 200){
+        console.log({ res });
+        if (res.status === 200) {
           location.reload();
         }
       });
@@ -173,14 +189,14 @@ if (buttonRestore.length > 0) {
 const formRestoreDestroy = document.querySelector("[form-restore-destroy]");
 
 if (formRestoreDestroy) {
-  const dataPaths = formRestoreDestroy.getAttribute('data-path').split('||');
+  const dataPaths = formRestoreDestroy.getAttribute("data-path").split("||");
   let url;
 
-  formRestoreDestroy.addEventListener('submit', (e) => {
+  formRestoreDestroy.addEventListener("submit", (e) => {
     e.preventDefault();
     const status = e.target.status.value;
-    url = status === 'restore' ? dataPaths[0] : dataPaths[1];
-    const inputChange = document.querySelectorAll('[input-change]');
+    url = status === "restore" ? dataPaths[0] : dataPaths[1];
+    const inputChange = document.querySelectorAll("[input-change]");
 
     const checkedInputChange = Array.from(inputChange).reduce((acc, curr) => {
       if (curr.checked) {
@@ -194,11 +210,11 @@ if (formRestoreDestroy) {
       status: status,
     };
     axios.patch(url, data).then((res) => {
-      if(res.status === 200){
+      if (res.status === 200) {
         location.reload();
       }
-    })
-  })
+    });
+  });
 }
 
-//Tính năng xoá vĩnh viễn sản phẩm 
+//Tính năng xoá vĩnh viễn sản phẩm
