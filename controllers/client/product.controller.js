@@ -3,29 +3,40 @@ const ProductModel = require("../../models/product.model");
 module.exports.index = async (req, res) => {
   try {
     const products = await ProductModel.find({
-      deleted: false
-    });
+      deleted: false,
+    }).sort({ position: "desc" });
 
     products.forEach((item) => {
-      item.priceNew = item.price*(100 - item.discountPercentage)/100;
-      item.priceNew = (item.priceNew).toFixed(0);
-    })
+      item.priceNew = (item.price * (100 - item.discountPercentage)) / 100;
+      item.priceNew = item.priceNew.toFixed(0);
+    });
 
-    res.render('client/pages/products/index', {
-      pageTitle: 'Trang danh sách sản phẩm',
-      products: products
+    res.render("client/pages/products/index", {
+      pageTitle: "Trang danh sách sản phẩm",
+      products: products,
     });
   } catch (error) {
-    console.log({error}) 
+    console.log({ error });
   }
-  
-  
-}
+};
 
-module.exports.create = (req, res) => {
-  res.render('client/pages/products/index');
-}
+module.exports.detail = async (req, res) => {
+  const slug = req.params.slug;
 
-module.exports.edit = (req, res) => {
-  res.render('client/pages/products/index');
-}
+  // console.log(slug);
+
+  const product = await ProductModel.findOne({
+    slug: slug,
+    deleted: false,
+    status: "active",
+  });
+  product.priceNew = (product.price * (100 - product.discountPercentage)) / 100;
+  product.priceNew = product.priceNew.toFixed(0);
+
+  // console.log(product);
+
+  res.render("client/pages/products/detail", {
+    pageTitle: "Trang Chi tiết sản phẩm",
+    product: product
+  });
+};

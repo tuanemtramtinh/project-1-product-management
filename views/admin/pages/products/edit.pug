@@ -3,7 +3,7 @@ include ../../mixins/box-filter.pug
 block main
   h1 #{pageTitle}
   form(
-    action=`/${prefixAdmin}/product/create`
+    action=`/${prefixAdmin}/product/edit/${product.id}?_method=PATCH`
     method="POST"
     enctype="multipart/form-data"
   )
@@ -15,6 +15,7 @@ block main
         id="title"
         name="title"
         required
+        value=product.title
       )
     div(class="form-group")
       label(for="desc") Mô tả
@@ -24,7 +25,7 @@ block main
         name="description"
         rows="5"
         textarea-mce
-      )
+      ) #{product.description}
     div(class="form-group")
       label(for="price") Giá
       input(
@@ -32,7 +33,7 @@ block main
         class="form-control"
         id="price"
         name="price"
-        value="0"
+        value=product.price
         min="0"
       )
     div(class="form-group")
@@ -42,7 +43,7 @@ block main
         class="form-control"
         id="discount"
         name="discountPercentage"
-        value="0"
+        value=product.discountPercentage
         min="0"
       )
     div(class="form-group")
@@ -52,7 +53,7 @@ block main
         class="form-control"
         id="stock"
         name="stock"
-        value="0"
+        value=product.stock
         min="0"
       )
     div(class="form-group" upload-image)
@@ -65,7 +66,11 @@ block main
         accept="image/*"
         upload-image-input
       )
-      img(src="" alt="" class="image-preview" upload-image-preview)
+      img(
+        src=product.thumbnail
+        class="image-preview"
+        upload-image-preview
+      )
     div(class="form-group")
       label(for="position") Vị trí
       input(
@@ -75,6 +80,7 @@ block main
         name="position"
         placeholder="Tự động tăng"
         min="1"
+        value=product.position
       )
     div(class="form-group form-check form-check-inline")
       input(
@@ -83,7 +89,7 @@ block main
         id="statusActive"
         name="status"
         value="active"
-        checked
+        checked=(product.status == "active" ? true : false)
       )
       label(for="statusActive" class="form-check-label") Hoạt động
     div(class="form-group form-check form-check-inline")
@@ -93,10 +99,11 @@ block main
         id="statusInActive"
         name="status"
         value="inactive"
+        checked=(product.status == "inactive" ? true : false)
       )
       label(for="statusInActive" class="form-check-label") Dừng hoạt động
     div(class="form-group")
       button(
         type="submit"
         class="btn btn-primary"
-      ) Tạo mới
+      ) Cập nhật

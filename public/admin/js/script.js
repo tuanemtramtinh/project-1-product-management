@@ -145,6 +145,33 @@ if (buttonDelete.length > 0) {
   });
 }
 
+//Tính năng thay đổi vị trí sản phẩm
+const inputPosition = document.querySelectorAll("[input-position]");
+if (inputPosition.length > 0) {
+  console.log("hello");
+  inputPosition.forEach((input) => {
+    input.addEventListener("change", (e) => {
+      const itemId = input.getAttribute("item-id");
+      const dataPath = input.getAttribute("data-path");
+      const position = e.target.value;
+
+      axios.patch(dataPath, { id: itemId, position: position }).then((res) => {
+        if (res.status === 200) {
+          location.reload();
+        }
+      });
+    });
+  });
+}
+
+//Tính năng thông báo
+const alertMessage = document.querySelector("[alert-message]");
+if (alertMessage) {
+  setTimeout(() => {
+    alertMessage.style.display = "none";
+  }, 3000);
+}
+
 //Tính năng Preview ảnh
 const uploadImage = document.querySelector("[upload-image]");
 if (uploadImage) {
@@ -159,6 +186,34 @@ if (uploadImage) {
       uploadImagePreview.src = URL.createObjectURL(file);
     }
   });
+}
+
+//Tính năng sắp xếp theo tiêu chí
+const sortSelect = document.querySelector("[sort-select]");
+if (sortSelect) {
+  console.log(sortSelect);
+  const newUrl = new URL(location.href);
+  sortSelect.addEventListener("change", (e) => {
+    const value = e.target.value;
+
+    if (value) {
+      const [sortKey, sortValue] = value.split("-");
+      newUrl.searchParams.set("sortKey", sortKey);
+      newUrl.searchParams.set("sortValue", sortValue);
+    } else {
+      newUrl.searchParams.delete("sortKey");
+      newUrl.searchParams.delete("sortValue");
+    }
+
+    location.href = newUrl;
+  });
+
+  const currentSortKey = newUrl.searchParams.get("sortKey");
+  const currentSortValue = newUrl.searchParams.get("sortValue");
+
+  if (currentSortKey && currentSortValue) {
+    sortSelect.value = `${currentSortKey}-${currentSortValue}`;
+  }
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------

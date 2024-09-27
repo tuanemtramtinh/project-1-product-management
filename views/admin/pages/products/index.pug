@@ -43,6 +43,19 @@ block main
 
 
   .card.mb-3
+    .card-header Sắp xếp
+    .card-body
+      .row
+        .col-4
+          select(class="form-control" sort-select)
+            option(value="position-desc") Vị trí giảm dần
+            option(value="position-asc") Vị trí tăng dần
+            option(value="price-desc") Giá giảm dần
+            option(value="price-asc") Giá tăng dần
+            option(value="title-desc") Tiêu đề từ Z đến A
+            option(value="title-asc") Tiêu đề từ A đến Z
+
+  .card.mb-3
     .card-header Thay đổi trạng thái và xoá sản phẩm
     .card-body
       .row
@@ -55,6 +68,7 @@ block main
               select(name="status" class="form-control")
                 option(value="active") Hoạt động
                 option(value="inactive") Dừng hoạt động 
+                option(value="delete") Xoá 
               .input-group-append
                 button(
                   class="btn btn-success"
@@ -79,6 +93,7 @@ block main
             th Hình ảnh
             th Tiêu đề
             th Giá
+            th Vị trí
             th Trạng thái
             th Hành động
 
@@ -97,13 +112,29 @@ block main
                 )
               td #{item.title}
               td #{item.price}$
+              td 
+                input(
+                    type="number"
+                    value=item.position
+                    item-id=item.id
+                    data-path=`/${prefixAdmin}/product/change-position`
+                    input-position
+                    style="width: 60px;"
+                  )
               td
                 if(item.status == "active")
                   a(href="#" class="badge badge-success" item-id=item.id button-change-status="inactive" data-path=`/${prefixAdmin}/product/change-status`) Hoạt động
                 else if (item.status == "inactive")
                   a(href="#" class="badge badge-danger" item-id=item.id button-change-status="active" data-path=`/${prefixAdmin}/product/change-status`) Dừng hoạt động
               td
-                button(class="btn btn-warning btn-sm") Sửa
+                a(
+                  class="btn btn-info btn-sm"
+                  href=`/${prefixAdmin}/product/detail/${item.id}`
+                ) Chi tiết
+                a(
+                  class="btn btn-warning btn-sm ml-1"
+                  href=`/${prefixAdmin}/product/edit/${item.id}`
+                ) Sửa
                 button(class="btn btn-danger btn-sm ml-1" button-delete item-id=item.id data-path=`/${prefixAdmin}/product/delete`) Xóa
 
   nav(class="mt-3")
