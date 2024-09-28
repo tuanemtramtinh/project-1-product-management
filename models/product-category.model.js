@@ -7,7 +7,7 @@ const productCategorySchema = new mongoose.Schema({
   slug: {
     type: String,
     slug: "title",
-    unique: true
+    unique: true,
   },
   parent_id: String,
   description: String,
@@ -15,8 +15,9 @@ const productCategorySchema = new mongoose.Schema({
   position: Number,
   deleted: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
+  status: String,
 });
 
 const ProductCategoryModel = mongoose.model(
