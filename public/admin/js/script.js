@@ -2,7 +2,6 @@
 
 //Tính năng lọc trạng thái sản phẩm
 const boxFilter = document.querySelector("[box-filter]");
-
 if (boxFilter) {
   const newUrl = new URL(location.href);
 
@@ -25,7 +24,6 @@ if (boxFilter) {
 
 //Tính năng tìm kiếm
 const formSearch = document.querySelector("[form-search]");
-
 if (formSearch) {
   const newUrl = new URL(location.href);
 
@@ -49,7 +47,6 @@ if (formSearch) {
 
 //Tính năng phân trang
 const pageList = document.querySelectorAll(".page-link");
-
 if (pageList.length > 0) {
   const newUrl = new URL(location.href);
 
@@ -76,7 +73,6 @@ if (pageList.length > 0) {
 
 //Tính năng thay đổi trạng thái một sản phẩm
 const buttonChangeStatus = document.querySelectorAll("[button-change-status]");
-
 if (buttonChangeStatus.length > 0) {
   buttonChangeStatus.forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -97,7 +93,6 @@ if (buttonChangeStatus.length > 0) {
 
 //Tính năng thay đổi trạng thái của nhiều sản phẩm
 const formChangeMulti = document.querySelector("[form-change-multi]");
-
 if (formChangeMulti) {
   formChangeMulti.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -129,7 +124,6 @@ if (formChangeMulti) {
 
 //Tính năng xoá sản phẩm
 const buttonDelete = document.querySelectorAll("[button-delete]");
-
 if (buttonDelete.length > 0) {
   buttonDelete.forEach((button) => {
     button.addEventListener("click", () => {
@@ -216,6 +210,54 @@ if (sortSelect) {
   }
 }
 
+//Tính năng phân quyền
+const tablePermissions = document.querySelector("[table-permissions]");
+if (tablePermissions) {
+  const buttonSubmit = document.querySelector("[button-submit]");
+  if (buttonSubmit) {
+    const dataFinal = [];
+    buttonSubmit.addEventListener("click", () => {
+      const roleId = tablePermissions.querySelectorAll("[role-id]");
+      roleId.forEach((elementRoleId) => {
+        const id = elementRoleId.getAttribute("role-id");
+        const permissions = [];
+
+        const permissionsCheckedInput = tablePermissions.querySelectorAll(
+          `[data-id="${id}"]:checked`
+        );
+
+        permissionsCheckedInput.forEach((input) => {
+          const tr = input.closest("[data-name]");
+          const permission = tr.getAttribute("data-name");
+          permissions.push(permission);
+        });
+
+        dataFinal.push({
+          id: id,
+          permissions: permissions,
+        });
+      });
+
+      const path = buttonSubmit.getAttribute("data-path");
+      axios.patch(path, dataFinal).then((res) => {
+        if (res.status === 200) {
+          location.reload();
+        }
+      });
+    });
+  }
+}
+
+//Tính năng hiển thị bảng phân quyền
+let dataPermissions = tablePermissions.getAttribute("table-permissions");
+dataPermissions = JSON.parse(dataPermissions);
+dataPermissions.forEach(item => {
+  item.permissions.forEach(permission => {
+    const input = document.querySelector(`tr[data-name="${permission}"] input[data-id="${item._id}"]`);
+    input.checked = true;
+  })
+})
+
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 
@@ -223,7 +265,6 @@ if (sortSelect) {
 
 //Tính năng khôi phục sản phẩm
 const buttonRestore = document.querySelectorAll("[button-restore]");
-
 if (buttonRestore.length > 0) {
   buttonRestore.forEach((button) => {
     button.addEventListener("click", () => {
@@ -242,7 +283,6 @@ if (buttonRestore.length > 0) {
 
 //Tính năng khôi phục nhiều sản phẩm
 const formRestoreDestroy = document.querySelector("[form-restore-destroy]");
-
 if (formRestoreDestroy) {
   const dataPaths = formRestoreDestroy.getAttribute("data-path").split("||");
   let url;

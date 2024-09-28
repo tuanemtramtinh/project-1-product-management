@@ -1,5 +1,6 @@
 const { prefixAdmin } = require("../../config/system");
 const ProductModel = require("../../models/product.model");
+const ProductCategoryModel = require("../../models/product-category.model");
 
 module.exports.index = async (req, res) => {
   try {
@@ -57,6 +58,7 @@ module.exports.index = async (req, res) => {
       products: products,
       currentPage: page,
       totalPages: totalPages,
+      limitItems: limitItems,
     });
   } catch (error) {
     console.log(error);
@@ -144,8 +146,11 @@ module.exports.changePosition = async (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
+    const listCategory = await ProductCategoryModel.find({ deleted: false });
+
     res.render("admin/pages/products/create", {
       pageTitle: "Trang thêm mới sản phẩm",
+      listCategory: listCategory,
     });
   } catch (error) {
     console.log(error);
@@ -176,9 +181,11 @@ module.exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await ProductModel.findById(id);
+    const listCategory = await ProductCategoryModel.find({ deleted: false });
     res.render("admin/pages/products/edit", {
       pageTitle: "Trang chỉnh sửa sản phẩm",
       product: product,
+      listCategory: listCategory,
     });
   } catch (error) {
     console.log(error);
