@@ -99,3 +99,22 @@ module.exports.permissionsPatch = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.detail = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const role = await RoleModel.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    console.log(role);
+
+    res.render("admin/pages/roles/detail", {
+      pageTitle: "Trang chi tiết nhóm quyền",
+      role: role
+    })
+  } catch (error) {
+    console.log(error);
+  }
+};

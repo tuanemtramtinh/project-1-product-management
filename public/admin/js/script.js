@@ -246,17 +246,33 @@ if (tablePermissions) {
       });
     });
   }
+
+  //Tính năng hiển thị bảng phân quyền
+  let dataPermissions = tablePermissions.getAttribute("table-permissions");
+  dataPermissions = JSON.parse(dataPermissions);
+  dataPermissions.forEach((item) => {
+    item.permissions.forEach((permission) => {
+      const input = document.querySelector(
+        `tr[data-name="${permission}"] input[data-id="${item._id}"]`
+      );
+      input.checked = true;
+    });
+  });
 }
 
-//Tính năng hiển thị bảng phân quyền
-let dataPermissions = tablePermissions.getAttribute("table-permissions");
-dataPermissions = JSON.parse(dataPermissions);
-dataPermissions.forEach(item => {
-  item.permissions.forEach(permission => {
-    const input = document.querySelector(`tr[data-name="${permission}"] input[data-id="${item._id}"]`);
+//Tính năng hiển thị bảng phân quyền trong trang chi tiết
+const tableDetail = document.querySelector("[table-detail]");
+if (tableDetail) {
+  let detailDataPermissions = tableDetail.getAttribute("table-detail");
+  detailDataPermissions = JSON.parse(detailDataPermissions);
+  detailDataPermissions.permissions.forEach((permission) => {
+    const input = document.querySelector(
+      `tr[data-name="${permission}"] input[data-id="${detailDataPermissions._id}"]`
+    );
     input.checked = true;
-  })
-})
+    console.log(input);
+  });
+}
 
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------

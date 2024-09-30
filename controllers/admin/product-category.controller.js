@@ -12,7 +12,9 @@ module.exports.index = async (req, res) => {
       pageTitle: "Danh sách danh mục sản phẩm",
       listCategory: listCategory,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports.create = async (req, res) => {
@@ -76,18 +78,39 @@ module.exports.editPatch = async (req, res) => {
     if (req.body.position) {
       req.body.position = parseInt(req.body.position);
     } else {
-      delete req.body.position
+      delete req.body.position;
     }
 
     // console.log(req.body);
 
-    await ProductCategoryModel.updateOne({
-      _id: id,
-      deleted: false
-    }, req.body);
+    await ProductCategoryModel.updateOne(
+      {
+        _id: id,
+        deleted: false,
+      },
+      req.body
+    );
 
     req.flash("success", "Cập nhật thành công!");
     res.redirect(`back`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.detail = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const category = await ProductCategoryModel.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    res.render("admin/pages/products-category/detail", {
+      pageTitle: "Trang chi tiết danh mục sản phẩm",
+      category: category
+    });
   } catch (error) {
     console.log(error);
   }
