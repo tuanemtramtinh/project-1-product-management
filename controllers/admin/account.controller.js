@@ -38,11 +38,12 @@ module.exports.create = async (req, res) => {
 
 module.exports.createPost = async (req, res) => {
   try {
-    req.body.token = generateHelper.generateRandomString(30);
-    req.body.password = md5(req.body.password);
+    if (res.locals.user.role_id.permissions.includes("accounts_create")) {
+      req.body.token = generateHelper.generateRandomString(30);
+      req.body.password = md5(req.body.password);
 
-    await AccountModel.create(req.body);
-
+      await AccountModel.create(req.body);
+    }
     res.redirect(`/${systemConfig.prefixAdmin}/accounts`);
   } catch (error) {
     console.log(error);
@@ -72,10 +73,15 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editPatch = async (req, res) => {
   try {
-    await AccountModel.updateOne(req.body);
+    if (res.locals.user.role_id.permissions.includes("accounts_edit")) {
+      await AccountModel.updateOne(req.body);
 
-    req.flash("success", "Cập nhật tài khoản thành công");
-    res.redirect("back");
+      req.flash("success", "Cập nhật tài khoản thành công");
+      res.redirect("back");
+    }
+    else {
+      res.redirect(`/${systemConfig.prefixAdmin}/accounts`);
+    }
   } catch (error) {
     console.log(error);
   }

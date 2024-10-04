@@ -20,9 +20,11 @@ module.exports.create = async (req, res) => {
 
 module.exports.createPost = async (req, res) => {
   try {
-    await RoleModel.create(req.body);
+    if (res.locals.user.role_id.permissions.includes("roles_create")) {
+      await RoleModel.create(req.body);
 
-    res.redirect(`/${systemConfig.prefixAdmin}/role`);
+      res.redirect(`/${systemConfig.prefixAdmin}/role`);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -48,19 +50,23 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editPatch = async (req, res) => {
   try {
-    const id = req.params.id;
+    if (res.locals.user.role_id.permissions.includes("roles_edit")) {
+      const id = req.params.id;
 
-    await RoleModel.updateOne(
-      {
-        _id: id,
-        deleted: false,
-      },
-      req.body
-    );
+      await RoleModel.updateOne(
+        {
+          _id: id,
+          deleted: false,
+        },
+        req.body
+      );
 
-    req.flash("success", "Cập nhật thành công");
+      req.flash("success", "Cập nhật thành công");
 
-    res.redirect("back");
+      res.redirect("back");
+    } else {
+      res.redirect(`/${systemConfig.prefixAdmin}/role`);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -81,20 +87,22 @@ module.exports.permissions = async (req, res) => {
 
 module.exports.permissionsPatch = async (req, res) => {
   try {
-    for (const item of req.body) {
-      await RoleModel.updateOne(
-        {
-          _id: item.id,
-          deleted: false,
-        },
-        {
-          permissions: item.permissions,
-        }
-      );
-    }
+    if (res.locals.user.role_id.permissions.includes("roles_permissions")) {
+      for (const item of req.body) {
+        await RoleModel.updateOne(
+          {
+            _id: item.id,
+            deleted: false,
+          },
+          {
+            permissions: item.permissions,
+          }
+        );
+      }
 
-    req.flash("success", "Cập nhật phân quyền thành công");
-    res.json({ messages: "success" });
+      req.flash("success", "Cập nhật phân quyền thành công");
+      res.json({ messages: "success" });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -112,8 +120,8 @@ module.exports.detail = async (req, res) => {
 
     res.render("admin/pages/roles/detail", {
       pageTitle: "Trang chi tiết nhóm quyền",
-      role: role
-    })
+      role: role,
+    });
   } catch (error) {
     console.log(error);
   }

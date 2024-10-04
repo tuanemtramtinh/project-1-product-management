@@ -33,15 +33,18 @@ module.exports.create = async (req, res) => {
 
 module.exports.createPost = async (req, res) => {
   try {
-    if (req.body.position) {
-      req.body.position = parseInt(req.body.position);
-    } else {
-      const countDocuments = await ProductCategoryModel.countDocuments();
-      req.body.position = countDocuments + 1;
+    if (
+      res.locals.user.role_id.permissions.includes("products-category_create")
+    ) {
+      if (req.body.position) {
+        req.body.position = parseInt(req.body.position);
+      } else {
+        const countDocuments = await ProductCategoryModel.countDocuments();
+        req.body.position = countDocuments + 1;
+      }
+
+      await ProductCategoryModel.create(req.body);
     }
-
-    await ProductCategoryModel.create(req.body);
-
     res.redirect(`/${prefixAdmin}/product-category`);
   } catch (error) {
     console.log(error);
@@ -73,26 +76,32 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editPatch = async (req, res) => {
   try {
-    const id = req.params.id;
+    if (
+      res.locals.user.role_id.permissions.includes("products-category_edit")
+    ) {
+      const id = req.params.id;
 
-    if (req.body.position) {
-      req.body.position = parseInt(req.body.position);
+      if (req.body.position) {
+        req.body.position = parseInt(req.body.position);
+      } else {
+        delete req.body.position;
+      }
+
+      // console.log(req.body);
+
+      await ProductCategoryModel.updateOne(
+        {
+          _id: id,
+          deleted: false,
+        },
+        req.body
+      );
+
+      req.flash("success", "Cập nhật thành công!");
+      res.redirect(`back`);
     } else {
-      delete req.body.position;
+      res.redirect(`/${systemConfig.prefixAdmin}/product-category`);
     }
-
-    // console.log(req.body);
-
-    await ProductCategoryModel.updateOne(
-      {
-        _id: id,
-        deleted: false,
-      },
-      req.body
-    );
-
-    req.flash("success", "Cập nhật thành công!");
-    res.redirect(`back`);
   } catch (error) {
     console.log(error);
   }
@@ -109,7 +118,7 @@ module.exports.detail = async (req, res) => {
 
     res.render("admin/pages/products-category/detail", {
       pageTitle: "Trang chi tiết danh mục sản phẩm",
-      category: category
+      category: category,
     });
   } catch (error) {
     console.log(error);
