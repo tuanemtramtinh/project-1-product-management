@@ -159,18 +159,18 @@ module.exports.create = async (req, res) => {
 
 module.exports.createPost = async (req, res) => {
   try {
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
-    if (req.body.position) {
-      req.body.position = parseInt(req.body.position);
-    } else {
-      const countDocuments = await ProductModel.countDocuments();
-      req.body.position = countDocuments + 1;
+    if (res.locals.user.role_id.permissions.includes("products_create")) {
+      req.body.price = parseInt(req.body.price);
+      req.body.discountPercentage = parseInt(req.body.discountPercentage);
+      req.body.stock = parseInt(req.body.stock);
+      if (req.body.position) {
+        req.body.position = parseInt(req.body.position);
+      } else {
+        const countDocuments = await ProductModel.countDocuments();
+        req.body.position = countDocuments + 1;
+      }
+      await ProductModel.create(req.body);
     }
-
-    await ProductModel.create(req.body);
-
     res.redirect(`/${prefixAdmin}/product`);
   } catch (error) {
     console.log(error);
@@ -194,31 +194,35 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editPatch = async (req, res) => {
   try {
-    const id = req.params.id;
+    if (res.locals.user.role_id.permissions.includes("products_edit")) {
+      const id = req.params.id;
 
-    if (req.body.price) {
-      req.body.price = parseInt(req.body.price);
+      if (req.body.price) {
+        req.body.price = parseInt(req.body.price);
+      }
+
+      if (req.body.discountPercentage) {
+        req.body.discountPercentage = parseInt(req.body.discountPercentage);
+      }
+
+      if (req.body.stock) {
+        req.body.stock = parseInt(req.body.stock);
+      }
+
+      if (req.body.position) {
+        req.body.position = parseInt(req.body.position);
+      }
+
+      const product = await ProductModel.updateOne(
+        { _id: id, deleted: false },
+        req.body
+      );
+
+      req.flash("success", "Cập nhật thành công!");
+      res.redirect("back");
+    } else {
+      res.redirect(`/${prefixAdmin}/product`);
     }
-
-    if (req.body.discountPercentage) {
-      req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    }
-
-    if (req.body.stock) {
-      req.body.stock = parseInt(req.body.stock);
-    }
-
-    if (req.body.position) {
-      req.body.position = parseInt(req.body.position);
-    }
-
-    const product = await ProductModel.updateOne(
-      { _id: id, deleted: false },
-      req.body
-    );
-
-    req.flash("success", "Cập nhật thành công!");
-    res.redirect("back");
   } catch (error) {
     console.log(error);
   }

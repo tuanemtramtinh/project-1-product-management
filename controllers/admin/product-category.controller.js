@@ -60,7 +60,7 @@ module.exports.edit = async (req, res) => {
       deleted: false,
     });
 
-    console.log(category);
+    // console.log(category);
     res.render("admin/pages/products-category/edit", {
       pageTitle: "Trang chỉnh sửa sản phẩm",
       category: category,

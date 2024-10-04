@@ -10,7 +10,10 @@ const accountSchema = new mongoose.Schema(
     token: String,
     phone: String,
     avatar: String,
-    role_id: String,
+    role_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "role",
+    },
     status: String,
     deleted: {
       type: Boolean,

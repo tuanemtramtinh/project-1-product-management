@@ -1,69 +1,68 @@
 extends ../../layouts/default.pug
-
 block main
-  if (user.role_id.permissions.includes("products-category_create"))
+  if (user.role_id.permissions.includes("accounts_edit"))
+    h1(class="mb-4") #{pageTitle}
     form(
-      action=`/${prefixAdmin}/product-category/create`
+      action=`/${prefixAdmin}/accounts/edit/${account.id}?_method=PATCH`
       method="POST"
       enctype="multipart/form-data"
     )
       div(class="form-group")
-        label(for="title") Tiêu đề
+        label(for="fullName") Họ tên *
         input(
           type="text"
           class="form-control"
-          id="title"
-          name="title"
+          id="fullName"
+          name="fullName"
           required
+          value=account.fullName
         )
       div(class="form-group")
-        label(for="parent_id") Danh mục cha
-        select(
+        label(for="email") Email *
+        input(
+          type="email"
           class="form-control"
-          id="parent_id"
-          name="parent_id"
+          id="email"
+          name="email"
+          required
+          value=account.email
         )
-          option(value="") -- Chọn danh mục --
-          each item in listCategory
-            option(value=item.id) #{item.title}
       div(class="form-group")
-        label(for="desc") Mô tả
-        textarea(
+        label(for="phone") Số điện thoại
+        input(
           type="text"
           class="form-control"
-          id="desc"
-          name="description"
-          rows="5"
-          textarea-mce
+          id="phone"
+          name="phone"
+          value=account.phone
         )
       div(
         class="form-group"
         upload-image
       )
-        label(for="thumbnail") Ảnh
+        label(for="avatar") Avatar
         input(
           type="file"
           class="form-control-file"
-          id="thumbnail"
-          name="thumbnail"
+          id="avatar"
+          name="avatar"
           accept="image/*"
           upload-image-input
         )
         img(
-          src=""
+          src=account.avatar
           class="image-preview"
           upload-image-preview
         )
       div(class="form-group")
-        label(for="position") Vị trí
-        input(
-          type="number"
-          class="form-control"
-          id="position"
-          name="position"
-          placeholder="Tự động tăng"
-          min="1"
-        )
+        label(for="role_id") Nhóm quyền
+        select(name="role_id" id="role_id" class="form-control")
+          option(disabled) -- Chọn --
+          each role in roles
+            option(
+              value=role.id
+              selected=(role.id == account.role_id ? true : false)
+            ) #{role.title}
       div(class="form-group form-check form-check-inline")
         input(
           type="radio"
@@ -71,7 +70,7 @@ block main
           id="statusActive"
           name="status"
           value="active"
-          checked
+          checked=(account.status == "active" ? true : false)
         )
         label(for="statusActive" class="form-check-label") Hoạt động
       div(class="form-group form-check form-check-inline")
@@ -81,12 +80,13 @@ block main
           id="statusInActive"
           name="status"
           value="inactive"
+          checked=(account.status == "inactive" ? true : false)
         )
         label(for="statusInActive" class="form-check-label") Dừng hoạt động
       div(class="form-group")
         button(
           type="submit"
           class="btn btn-primary"
-        ) Tạo mới
-  else 
-    div Bạn không có quyền truy cập vào trang này :D
+        ) Cập nhật
+  else
+    div Bạn không có quyền truy cập vào trang này

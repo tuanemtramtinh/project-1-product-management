@@ -1,26 +1,29 @@
 extends ../../layouts/default.pug
 block main
-  h1 #{pageTitle}
-  if (category.title)
-    h1(class="mb-4") #{category.title}
-  if (category.parent_id)
-    div
-      h2(class="mb-4") Danh mục cha
-      span #{category.parent_id}
-  if (category.thumbnail)
-    div(class="mb-4")
-      img(
-        src=category.thumbnail
-        style="width: 100px"
-      )
-  if (category.status)
-    div(class="mb-4")
-      span Trạng thái:
-      if (category.status === "active")
-        span(class="badge badge-success") Hoạt động
-      else
-        span(class="badge badge-danger") Dừng hoạt động
-  if (category.position)
-    div(class="mb-4") Vị trí: <b>#{category.position}</b>
-  if (category.description)
-    div(class="mb-4") !{category.description}
+  if (user.role_id.permissions.includes("products-category_view"))
+    h1 #{pageTitle}
+    if (category.title)
+      h1(class="mb-4") #{category.title}
+    if (category.parent_id)
+      div
+        h2(class="mb-4") Danh mục cha
+        span #{category.parent_id}
+    if (category.thumbnail)
+      div(class="mb-4")
+        img(
+          src=category.thumbnail
+          style="width: 100px"
+        )
+    if (category.status)
+      div(class="mb-4")
+        span Trạng thái:
+        if (category.status === "active")
+          span(class="badge badge-success") Hoạt động
+        else
+          span(class="badge badge-danger") Dừng hoạt động
+    if (category.position)
+      div(class="mb-4") Vị trí: <b>#{category.position}</b>
+    if (category.description)
+      div(class="mb-4") !{category.description}
+  else 
+    div Bạn không có quyền truy cập vào trang này

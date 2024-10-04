@@ -1,17 +1,23 @@
 .sider
   .inner-menu
     ul 
-      li
-        a(href=`/${prefixAdmin}/dashboard`) Tổng quan
-      li
-        a(href=`/${prefixAdmin}/product-category`) Danh mục sản phẩm
-      li
-        a(href=`/${prefixAdmin}/product`) Sản phẩm
-      li
-        a(href=`/${prefixAdmin}/role`) Nhóm quyền
-      li 
-        a(href=`/${prefixAdmin}/role/permissions`) Phân quyền
-      li 
-        a(href=`/${prefixAdmin}/accounts`) Tài khoản
+      if (user.role_id.permissions.includes("dashboard_view"))
+        li
+          a(href=`/${prefixAdmin}/dashboard`) Tổng quan
+      if (user.role_id.permissions.includes("products-category_view")) 
+        li
+          a(href=`/${prefixAdmin}/product-category`) Danh mục sản phẩm
+      if (user.role_id.permissions.includes("products_view"))
+        li
+          a(href=`/${prefixAdmin}/product`) Sản phẩm
+      if (user.role_id.permissions.includes("roles_view"))
+        li
+          a(href=`/${prefixAdmin}/role`) Nhóm quyền
+      if (user.role_id.permissions.includes("roles_permissions"))
+        li 
+          a(href=`/${prefixAdmin}/role/permissions`) Phân quyền
+      if (user.role_id.permissions.includes("accounts_view"))
+        li 
+          a(href=`/${prefixAdmin}/accounts`) Tài khoản
       li 
         a(href=`/${prefixAdmin}/trash`) Thùng rác 

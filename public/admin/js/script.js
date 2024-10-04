@@ -269,7 +269,9 @@ if (tableDetail) {
     const input = document.querySelector(
       `tr[data-name="${permission}"] input[data-id="${detailDataPermissions._id}"]`
     );
-    input.checked = true;
+    if(input){
+      input.checked = true;
+    }
     console.log(input);
   });
 }
