@@ -1,10 +1,22 @@
 const RoleModel = require("../../models/role.model");
 const systemConfig = require("../../config/system");
+const moment = require("moment");
 
 module.exports.index = async (req, res) => {
   const roleList = await RoleModel.find({
     deleted: false,
-  });
+  })
+    .populate("createdBy", "fullName")
+    .populate("updatedBy", "fullName");
+
+  for (const role of roleList) {
+    role.createdAtNew = moment(role.createdAt).format(
+      "dddd, Do MMM YYYY, h:mm:ss A"
+    );
+    role.updatedAtNew = moment(role.updatedAt).format(
+      "dddd, Do MMM YYYY, h:mm:ss A"
+    );
+  }
 
   res.render("admin/pages/roles/index", {
     pageTitle: "Nhóm quyền",
@@ -21,8 +33,10 @@ module.exports.create = async (req, res) => {
 module.exports.createPost = async (req, res) => {
   try {
     if (res.locals.user.role_id.permissions.includes("roles_create")) {
-      await RoleModel.create(req.body);
+      req.body.createdBy = res.locals.user._id;
+      req.body.updatedBy = res.locals.user._id;
 
+      await RoleModel.create(req.body);
       res.redirect(`/${systemConfig.prefixAdmin}/role`);
     }
   } catch (error) {
@@ -52,6 +66,8 @@ module.exports.editPatch = async (req, res) => {
   try {
     if (res.locals.user.role_id.permissions.includes("roles_edit")) {
       const id = req.params.id;
+
+      req.body.createdBy = res.locals.user._id;
 
       await RoleModel.updateOne(
         {

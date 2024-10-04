@@ -22,6 +22,8 @@ block main
               th STT
               th Nhóm quyền
               th Mô tả ngắn
+              th Tạo bởi
+              th Cập nhật bởi
               th Hành động
           tbody
             if(records.length > 0)
@@ -30,6 +32,14 @@ block main
                   td #{index + 1}
                   td #{item.title}
                   td #{item.description}
+                  td
+                    if (item.createdBy && item.createdBy.fullName)
+                      div #{item.createdBy.fullName}
+                    div #{item.createdAtNew}
+                  td 
+                    if (item.updatedBy && item.updatedBy.fullName)
+                      div #{item.updatedBy.fullName}
+                    div #{item.updatedAtNew}
                   td
                     a(
                       class="btn btn-secondary btn-sm"

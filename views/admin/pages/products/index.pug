@@ -100,6 +100,8 @@ block main
               th Giá
               th Vị trí
               th Trạng thái
+              th Tạo bởi
+              th Cập nhật bởi
               th Hành động
 
           tbody
@@ -142,6 +144,14 @@ block main
                       a(href="#" class="badge badge-danger" item-id=item.id button-change-status="active" data-path=`/${prefixAdmin}/product/change-status`) Dừng hoạt động
                     else
                       div(class="badge badge-danger") Dừng hoạt động
+                td
+                  if (item.createdBy && item.createdBy.fullName)
+                    div #{item.createdBy.fullName}
+                  div #{item.createdAtNew}
+                td 
+                  if (item.updatedBy && item.updatedBy.fullName)
+                    div #{item.updatedBy.fullName}
+                  div #{item.updatedAtNew}
                 td
                   a(
                     class="btn btn-info btn-sm"

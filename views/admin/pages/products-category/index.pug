@@ -25,6 +25,8 @@ block main
               th Tiêu đề
               th Vị trí
               th Trạng thái
+              th Tạo bởi
+              th Cập nhật bởi
               th Hành động
           tbody
             each item, index in listCategory
@@ -46,26 +48,45 @@ block main
                       style="width: 60px"
                       min="1"
                       name="position"
+                      item-id=item.id
+                      data-path=`/${prefixAdmin}/product-category/change-position`
+                      input-position
                     )
                   else 
                     div #{item.position}
                 td
                   if (item.status === "active")
-                    a(
-                      href="javascript:;"
-                      class="badge badge-success"
-                      data-status="active"
-                      data-id=item.id
-                      button-change-status
-                    ) Hoạt động
+                    if (user.role_id.permissions.includes("products-category_edit"))
+                      a(
+                        href="javascript:;"
+                        class="badge badge-success"
+                        data-status="active"
+                        item-id=item.id
+                        button-change-status="inactive"
+                        data-path=`/${prefixAdmin}/product-category/change-status`
+                      ) Hoạt động
+                    else 
+                      div(class="badge badge-success") Hoạt động
                   else
-                    a(
-                      href="javascript:;"
-                      class="badge badge-danger"
-                      data-status="inactive"
-                      data-id=item.id
-                      button-change-status
-                    ) Dừng hoạt động
+                    if (user.role_id.permissions.includes("products-category_edit"))
+                      a(
+                        href="javascript:;"
+                        class="badge badge-danger"
+                        data-status="inactive"
+                        item-id=item.id
+                        button-change-status="active"
+                        data-path=`/${prefixAdmin}/product-category/change-status`
+                      ) Dừng hoạt động
+                    else 
+                      div(class="badge badge-danger") Dừng hoạt động
+                td
+                  if (item.createdBy && item.createdBy.fullName)
+                    div #{item.createdBy.fullName}
+                  div #{item.createdAtNew}
+                td 
+                  if (item.updatedBy && item.updatedBy.fullName)
+                    div #{item.updatedBy.fullName}
+                  div #{item.updatedAtNew}
                 td
                   a(
                     class="btn btn-info btn-sm"

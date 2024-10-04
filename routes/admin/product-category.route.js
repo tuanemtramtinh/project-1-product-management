@@ -15,6 +15,11 @@ router.post(
   uploadCloud.uploadSingle,
   controller.createPost
 );
+
+router.patch("/change-status", controller.changeStatus);
+
+router.patch("/change-position", controller.changePosition);
+
 router.get("/edit/:id", controller.edit);
 
 router.patch(

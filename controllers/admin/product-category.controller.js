@@ -1,12 +1,28 @@
 const ProductCategoryModel = require("../../models/product-category.model");
 const systemConfig = require("../../config/system");
 const prefixAdmin = systemConfig.prefixAdmin;
+const moment = require("moment");
 
 module.exports.index = async (req, res) => {
   try {
     const listCategory = await ProductCategoryModel.find({
       deleted: false,
-    });
+    })
+      .populate("createdBy", "fullName")
+      .populate("updatedBy", "fullName");
+
+    for (const category of listCategory) {
+      if (category.createdAt) {
+        category.createdAtNew = moment(category.createdAt).format(
+          "dddd, Do MMM YYYY, h:mm:ss A"
+        );
+      }
+      if (category.updatedAt) {
+        category.updatedAtNew = moment(category.updatedAt).format(
+          "dddd, Do MMM YYYY, h:mm:ss A"
+        );
+      }
+    }
 
     res.render("admin/pages/products-category/index", {
       pageTitle: "Danh sách danh mục sản phẩm",
@@ -43,6 +59,9 @@ module.exports.createPost = async (req, res) => {
         req.body.position = countDocuments + 1;
       }
 
+      req.body.createdBy = res.locals.user._id;
+      req.body.updatedBy = res.locals.user._id;
+
       await ProductCategoryModel.create(req.body);
     }
     res.redirect(`/${prefixAdmin}/product-category`);
@@ -50,6 +69,36 @@ module.exports.createPost = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.changeStatus = async (req, res) => {
+  try {
+    await ProductCategoryModel.updateOne(
+      {
+        _id: req.body.id,
+        deleted: false,
+      },
+      req.body
+    );
+    req.flash("success", "Cập nhật trạng thái thành công");
+    res.json({ message: "Update Successfully" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.changePosition = async (req, res) => {
+  try {
+    await ProductCategoryModel.updateOne({
+      _id: req.body.id,
+      deleted: false
+    }, req.body);
+
+    req.flash("success", "Cập nhật vị trí thành công");
+    res.json({ message: "Update Position Successfully" })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports.edit = async (req, res) => {
   try {
@@ -87,7 +136,7 @@ module.exports.editPatch = async (req, res) => {
         delete req.body.position;
       }
 
-      // console.log(req.body);
+      req.body.updatedBy = res.locals.user._id;
 
       await ProductCategoryModel.updateOne(
         {

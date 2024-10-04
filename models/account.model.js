@@ -20,6 +20,14 @@ const accountSchema = new mongoose.Schema(
       default: false,
     },
     deletedAt: Date,
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "account",
+    },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "account",
+    },
   },
   {
     timestamps: true,

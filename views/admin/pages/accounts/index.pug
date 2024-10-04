@@ -24,6 +24,8 @@ block main
                 th Họ tên
                 th Nhóm quyền
                 th Email
+                th Tạo bởi
+                th Cập nhật bởi
                 th Trạng thái
                 th Hành động
             tbody
@@ -40,6 +42,14 @@ block main
                   td #{item.fullName}
                   td #{item.role_id.title}
                   td #{item.email}
+                  td
+                    if (item.createdBy && item.createdBy.fullName)
+                      div #{item.createdBy.fullName}
+                    div #{item.createdAtNew}
+                  td 
+                    if (item.updatedBy && item.updatedBy.fullName)
+                      div #{item.updatedBy.fullName}
+                    div #{item.updatedAtNew}
                   td
                     if (item.status === "active")
                       a(

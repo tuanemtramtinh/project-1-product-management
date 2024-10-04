@@ -81,8 +81,10 @@ if (buttonChangeStatus.length > 0) {
       const incomingChangeStatus = button.getAttribute("button-change-status");
       const itemId = button.getAttribute("item-id");
       const data = { id: itemId, status: incomingChangeStatus };
-
+      // console.log({dataPath, data});
+      
       axios.patch(dataPath, data).then((res) => {
+        console.log(res);
         if (res.status === 200) {
           location.reload();
         }
@@ -142,7 +144,6 @@ if (buttonDelete.length > 0) {
 //Tính năng thay đổi vị trí sản phẩm
 const inputPosition = document.querySelectorAll("[input-position]");
 if (inputPosition.length > 0) {
-  console.log("hello");
   inputPosition.forEach((input) => {
     input.addEventListener("change", (e) => {
       const itemId = input.getAttribute("item-id");
@@ -269,7 +270,7 @@ if (tableDetail) {
     const input = document.querySelector(
       `tr[data-name="${permission}"] input[data-id="${detailDataPermissions._id}"]`
     );
-    if(input){
+    if (input) {
       input.checked = true;
     }
     console.log(input);

@@ -20,7 +20,11 @@ module.exports = (app) => {
     authMiddleware.requireAuth,
     productRoute
   );
-  app.use(`/${systemConfig.prefixAdmin}/trash`, trashRoute);
+  app.use(
+    `/${systemConfig.prefixAdmin}/trash`,
+    authMiddleware.requireAuth,
+    trashRoute
+  );
   app.use(
     `/${systemConfig.prefixAdmin}/product-category`,
     authMiddleware.requireAuth,

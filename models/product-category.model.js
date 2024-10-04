@@ -18,7 +18,15 @@ const productCategorySchema = new mongoose.Schema({
     default: false,
   },
   status: String,
-});
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "account"
+  },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "account"
+  }
+}, {timestamps: true});
 
 const ProductCategoryModel = mongoose.model(
   "productCategory",

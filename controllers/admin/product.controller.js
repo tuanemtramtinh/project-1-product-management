@@ -1,6 +1,7 @@
 const { prefixAdmin } = require("../../config/system");
 const ProductModel = require("../../models/product.model");
 const ProductCategoryModel = require("../../models/product-category.model");
+const moment = require("moment");
 
 module.exports.index = async (req, res) => {
   try {
@@ -51,7 +52,22 @@ module.exports.index = async (req, res) => {
     const products = await ProductModel.find(filter)
       .limit(limitItems)
       .skip(skip)
-      .sort(sort);
+      .sort(sort)
+      .populate("createdBy", "fullName")
+      .populate("updatedBy", "fullName");
+
+    for (const product of products) {
+      if (product.createdAt) {
+        product.createdAtNew = moment(product.createdAt).format(
+          "dddd, Do MMM YYYY, h:mm:ss A"
+        );
+      }
+      if (product.updatedAt) {
+        product.updatedAtNew = moment(product.updatedAt).format(
+          "dddd, Do MMM YYYY, h:mm:ss A"
+        );
+      }
+    }
 
     res.render("admin/pages/products/index", {
       pageTitle: "Trang danh sách sản phẩm",
@@ -169,6 +185,10 @@ module.exports.createPost = async (req, res) => {
         const countDocuments = await ProductModel.countDocuments();
         req.body.position = countDocuments + 1;
       }
+
+      req.body.createdBy = res.locals.user._id;
+      req.body.updatedBy = res.locals.user._id;
+
       await ProductModel.create(req.body);
     }
     res.redirect(`/${prefixAdmin}/product`);
@@ -212,6 +232,8 @@ module.exports.editPatch = async (req, res) => {
       if (req.body.position) {
         req.body.position = parseInt(req.body.position);
       }
+
+      req.body.updatedBy = res.locals.user._id;
 
       const product = await ProductModel.updateOne(
         { _id: id, deleted: false },
