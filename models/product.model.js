@@ -23,19 +23,22 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    category_id: String,
+    category_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "productCategory",
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "account"
+      ref: "account",
     },
     updatedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "account"
+      ref: "account",
     },
     featured: {
       type: String,
-      default: "0"
-    }
+      default: "0",
+    },
   },
   { timestamps: true }
 );

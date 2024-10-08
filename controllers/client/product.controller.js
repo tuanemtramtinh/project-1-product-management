@@ -31,11 +31,29 @@ module.exports.category = async (req, res) => {
       slug: slugCategoryId,
     });
 
+    const allCategoryChildren = [];
+
+    const getCategoryChildren = async (parentId) => {
+      const childs = await ProductCategoryModel.find({
+        parent_id: parentId,
+        deleted: false,
+        status: "active",
+      });
+
+      for (child of childs) {
+        allCategoryChildren.push(child.id);
+
+        await getCategoryChildren(child.id);
+      }
+    };
+
+    await getCategoryChildren(category.id);
+
     const productList = await ProductModel.find({
-      category_id: category.id,
+      category_id: { $in: [category.id, ...allCategoryChildren] },
       deleted: false,
     }).sort({
-      position: "desc"
+      position: "desc",
     });
 
     productList.forEach((item) => {
@@ -45,7 +63,7 @@ module.exports.category = async (req, res) => {
 
     res.render("client/pages/products/index", {
       pageTitle: category.title,
-      products: productList
+      products: productList,
     });
   } catch (error) {
     console.log(error);
@@ -62,7 +80,10 @@ module.exports.detail = async (req, res) => {
       slug: slug,
       deleted: false,
       status: "active",
-    });
+    }).populate("category_id");
+
+    // console.log(product);
+
     product.priceNew =
       (product.price * (100 - product.discountPercentage)) / 100;
     product.priceNew = product.priceNew.toFixed(0);
