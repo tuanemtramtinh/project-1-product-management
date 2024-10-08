@@ -145,3 +145,14 @@ module.exports.changePasswordPatch = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.myProfile = (req, res) => {
+  try {
+    res.render("admin/pages/accounts/my-profile", {
+      pageTitle: "Thông tin cá nhân",
+      user: res.locals.user
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -32,6 +32,10 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "account"
     },
+    featured: {
+      type: String,
+      default: "0"
+    }
   },
   { timestamps: true }
 );

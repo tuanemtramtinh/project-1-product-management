@@ -1,9 +1,13 @@
+const { getAllCategory } = require('../../middlewares/category.middleware');
 const homeRoute = require('./home.route');
 const productRoute = require('./product.route');
 
 module.exports = (app) => {
+
+  app.use(getAllCategory);
+
   app.get('/', (req, res) => {
-    res.render('client/pages/home/index');
+    res.redirect('/home');
   })
 
   app.use('/products', productRoute);
