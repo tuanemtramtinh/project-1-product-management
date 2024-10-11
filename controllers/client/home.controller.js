@@ -5,7 +5,11 @@ module.exports.index = async (req, res) => {
     deleted: false,
     status: "active",
     featured: "1",
-  }).limit(6);
+  })
+    .limit(6)
+    .sort({
+      position: "desc",
+    });
 
   productsFeatured.forEach((item) => {
     item.priceNew = (item.price * (100 - item.discountPercentage)) / 100;
@@ -44,6 +48,6 @@ module.exports.index = async (req, res) => {
     pageTitle: "Trang chủ",
     productsFeatured: productsFeatured,
     productsNew: productsNew,
-    productsDiscount: productsDiscount
+    productsDiscount: productsDiscount,
   });
 };

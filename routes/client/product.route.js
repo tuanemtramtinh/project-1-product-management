@@ -7,6 +7,8 @@ router.get("/", controller.index);
 
 router.get("/detail/:slug", controller.detail);
 
+router.get("/search", controller.search);
+
 router.get("/:slugCategoryId", controller.category);
 
 

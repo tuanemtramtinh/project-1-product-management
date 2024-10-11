@@ -98,3 +98,34 @@ module.exports.detail = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.search = async (req, res) => {
+  try {
+    let products = [];
+
+    if (req.query.keyword) {
+      const keyword = new RegExp(req.query.keyword, "i");
+
+      products = await ProductModel.find({
+        title: keyword,
+        deleted: false,
+        status: "active",
+      }).sort({
+        position: "desc",
+      });
+
+      for (const item of products) {
+        item.priceNew = (1 - item.discountPercentage / 100) * item.price;
+        item.priceNew = item.priceNew.toFixed(0);
+      }
+    }
+
+    res.render("client/pages/products/search", {
+      pageTitle: `Kết quả tìm kiếm: ${req.query.keyword}`,
+      keyword: req.query.keyword,
+      products: products,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
