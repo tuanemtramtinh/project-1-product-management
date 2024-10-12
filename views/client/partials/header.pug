@@ -6,7 +6,7 @@ header.header
       .col-3
         .inner-logo
           a(href="/")
-            img(src="/images/logo.svg", alt="Logo")
+            img(src="/images/logo.svg" alt="Logo")
 
       .col-5
         form(
@@ -25,7 +25,7 @@ header.header
               type="submit"
               class="btn btn-primary"
             ) Tìm
-      
+
       .col-4
         .inner-menu
           ul
@@ -36,3 +36,12 @@ header.header
               +sub-category(allCategory)
             li
               a(href="/cart") Giỏ hàng (#{miniCart})
+            if (user)
+              li
+                a(href="/user/logout") Đăng xuất
+            else
+              li
+                a(href="/user/login") Đăng nhập
+              li
+                a(href="/user/register") Đăng ký
+              
