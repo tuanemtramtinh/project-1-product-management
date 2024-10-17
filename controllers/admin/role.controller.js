@@ -132,7 +132,7 @@ module.exports.detail = async (req, res) => {
       deleted: false,
     });
 
-    console.log(role);
+    // console.log(role);
 
     res.render("admin/pages/roles/detail", {
       pageTitle: "Trang chi tiết nhóm quyền",
